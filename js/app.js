@@ -15,7 +15,7 @@ $(document).ready(function() {
   
     buscar(title) {
       $('#consola').html('');
-      $.getJSON((this.url + '&s=' + encodeURI(title)), function(res) {
+      $.get((this.url + '&s=' + encodeURI(title)), function(res) {
         for (var item in res.Search) {
           var peli = res.Search[item];
           console.log(res.Search[item]);
@@ -28,7 +28,6 @@ $(document).ready(function() {
     }
   }
   var api = null;
-  
   $(function() {
     api = new Api();
     api.bind();
@@ -47,3 +46,32 @@ var config = {
   messagingSenderId: '288667018806'
 };
 firebase.initializeApp(config);
+
+var $btnGoogle = ('#btnGoogle');
+$btnGoogle.on('click', function() {
+  authGoogle();
+});
+
+function authGoogle() {
+  var provider = new firebase.auth.Google.AuthProvider();
+  authentication(provider);
+};
+
+function authentication(provider) {
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    var token = result.credential.accessToken;
+    // The signed-in user info.
+    var user = result.user;
+    // ...
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
+};
